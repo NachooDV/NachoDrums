@@ -1,4 +1,4 @@
-# 🥁 NachoDrums
+#NachoDrums
 
 **Módulo de batería electrónica MIDI** basado en Arduino Mega 2560 con pantalla LCD I2C.  
 Convierte pads piezoeléctricos en señales MIDI de baja latencia (<10ms) para usar con cualquier DAW o sintetizador.
@@ -110,15 +110,15 @@ TX1 (pin 18) ── 220Ω ── DIN-5 pin 4
 ## Instalación
 
 ### Librerías necesarias
-Instalá desde el gestor de librerías del IDE de Arduino:
+Instala desde el gestor de librerías del IDE de Arduino:
 - `LiquidCrystal_I2C` de Frank de Brabander
 
 ### Pasos
-1. Cloná o descargá este repositorio
-2. Abrí `NachoDrums_REV2.ino` en el IDE de Arduino
-3. Seleccioná la placa: **Arduino Mega or Mega 2560**
-4. Seleccioná el puerto COM correspondiente
-5. Cargá el sketch
+1. Clona o descarga este repositorio
+2. Abre `NachoDrums_REV2.ino` en el IDE de Arduino
+3. Selecciona la placa: **Arduino Mega or Mega 2560**
+4. Selecciona el puerto COM correspondiente
+5. Carga el sketch
 
 ---
 
@@ -147,20 +147,20 @@ Caja ON
 | CANCEL | Cancelar calibración de Hi-Hat |
 
 ### Calibración Hi-Hat
-1. Navegá hasta el menú **CALIBRAR HIHAT**
-2. Presioná NEXT
-3. Cerrá el pedal completamente → presioná NEXT
-4. Abrí el pedal completamente → presioná NEXT
+1. Navega hasta el menú **CALIBRAR HIHAT**
+2. Presiona NEXT
+3. Cierra el pedal completamente → presiona NEXT
+4. Abre el pedal completamente → presiona NEXT
 5. Listo — los valores se guardan automáticamente en EEPROM
 
 ### Factory Reset
-Navegá hasta **Factory Reset** y presioná NEXT para restaurar todos los valores por defecto.
+Navega hasta **Factory Reset** y presiona NEXT para restaurar todos los valores por defecto.
 
 ---
 
 ## Ajuste de latencia
 
-Si sentís que la respuesta no es inmediata, estos son los parámetros a ajustar en el código:
+Si sientes que la respuesta no es inmediata, estos son los parámetros a ajustar en el código:
 
 | Constante | Valor por defecto | Efecto |
 |---|---|---|
@@ -195,5 +195,5 @@ Este proyecto está bajo la licencia **MIT**. Podés usarlo, modificarlo y distr
 
 ## Autor
 
-**Nacho** — Proyecto DIY de batería electrónica MIDI  
+**NachoDV** — Proyecto DIY de batería electrónica MIDI  
 Construido con Arduino Mega 2560
