@@ -1,0 +1,6 @@
+# Salida de compilación (arduino-cli / IDE)
+build/
+
+# Basura del sistema
+Thumbs.db
+.DS_Store

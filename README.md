@@ -1,4 +1,4 @@
-#NachoDrums
+# NachoDrums
 
 **Módulo de batería electrónica MIDI** basado en Arduino Mega 2560 con pantalla LCD I2C.  
 Convierte pads piezoeléctricos en señales MIDI de baja latencia (<10ms) para usar con cualquier DAW o sintetizador.
@@ -11,6 +11,7 @@ Convierte pads piezoeléctricos en señales MIDI de baja latencia (<10ms) para u
 - Detección de golpe de ultra-baja latencia (<10ms)
 - Velocity dinámica mapeada al pico de señal del piezo
 - Hi-Hat con pedal analógico (CC MIDI #4) y detección de posición (abierto / pedal / cerrado)
+- Salida MIDI por USB (mocoLUFA en el ATmega16U2) o DIN-5 opcional
 - Pantalla LCD I2C 16x2 con menú completo de configuración
 - Configuración guardada en EEPROM con checksum
 - Note Off no bloqueante
@@ -32,7 +33,7 @@ Convierte pads piezoeléctricos en señales MIDI de baja latencia (<10ms) para u
 | Resistencia 220 Ω | 1 | Para el LED indicador |
 | LED | 1 | Indicador de golpe |
 | Pulsadores normalmente abiertos | 7 | Para el menú |
-| Conector DIN-5 | 1 | Salida MIDI (opcional si usás USB) |
+| Conector DIN-5 | 1 | Salida MIDI opcional; el firmware actual usa USB |
 | Resistencia 220 Ω | 1 | Para el circuito MIDI DIN-5 |
 
 ---
@@ -75,7 +76,8 @@ Convierte pads piezoeléctricos en señales MIDI de baja latencia (<10ms) para u
 | Pin | Función |
 |---|---|
 | 25 | LED indicador de golpe |
-| 18 (TX1) | Salida MIDI DIN-5 |
+| 1 (TX0) | MIDI hacia el ATmega16U2 (mocoLUFA → USB-MIDI) |
+| 18 (TX1) | Libre; hay que espejar los bytes para usar DIN-5 |
 | 20 (SDA) | LCD I2C datos |
 | 21 (SCL) | LCD I2C reloj |
 
@@ -97,12 +99,23 @@ Piezo (−) ──┴────────────── GND
 
 ---
 
-## Circuito MIDI DIN-5
+## Salida MIDI
+
+### USB (recomendado)
+
+El firmware escribe en **TX0 (pin 1)**, que va al ATmega16U2. Para que la PC lo vea como instrumento MIDI hay que flashear el 16U2 con **mocoLUFA** (o HIDuino). Sin ese firmware, el USB funciona solo como puerto serie y el DAW no ve nada.
+
+> ⚠️ Con mocoLUFA instalado el puerto serie normal desaparece: para volver a cargar sketches hay que entrar en modo DFU puenteando los pads del 16U2 (o usar un programador ISP).
+
+### DIN-5 (opcional)
+
+El firmware no escribe en `Serial1`, así que para usar el conector hay que duplicar cada byte a `Serial1` (TX1, pin 18). El circuito estándar es:
 
 ```
-TX1 (pin 18) ── 220Ω ── DIN-5 pin 4
+TX1 (pin 18) ── 220Ω ── DIN-5 pin 5
++5V          ── 220Ω ── DIN-5 pin 4
                          DIN-5 pin 2 ── GND
-                         DIN-5 pin 5 ── sin conectar
+                         DIN-5 pin 3 ── sin conectar
 ```
 
 ---
@@ -115,10 +128,12 @@ Instala desde el gestor de librerías del IDE de Arduino:
 
 ### Pasos
 1. Clona o descarga este repositorio
-2. Abre `NachoDrums_REV2.ino` en el IDE de Arduino
+2. Abre `NachoDrums.ino` en el IDE de Arduino
 3. Selecciona la placa: **Arduino Mega or Mega 2560**
 4. Selecciona el puerto COM correspondiente
 5. Carga el sketch
+
+> Para MIDI por USB, el ATmega16U2 debe tener mocoLUFA instalado. Ver [Salida MIDI](#salida-midi).
 
 ---
 
@@ -141,17 +156,19 @@ Caja ON
 | Botón | Función |
 |---|---|
 | PAD+ / PAD− | Navegar entre pads |
-| NEXT | Cambiar entre S / C / N |
+| NEXT | Cambiar entre S / C / N. En calibración: Ab / Cr / Empezar |
 | UP / DOWN | Modificar el valor seleccionado (mantener para repetición) |
 | TOGGLE | Activar o desactivar el pad actual |
-| CANCEL | Cancelar calibración de Hi-Hat |
+| CANCEL | Cancelar calibración y restaurar los valores anteriores |
 
 ### Calibración Hi-Hat
 1. Navega hasta el menú **CALIBRAR HIHAT**
-2. Presiona NEXT
+2. Con NEXT elegí **Empezar** (podés ajustar `Ab` y `Cr` a mano antes)
 3. Cierra el pedal completamente → presiona NEXT
 4. Abre el pedal completamente → presiona NEXT
 5. Listo — los valores se guardan automáticamente en EEPROM
+
+Si el recorrido del pedal es menor a 80 counts, la pantalla muestra **Rango muy corto** y no guarda. `CANCEL` cancela y restaura los valores previos.
 
 ### Factory Reset
 Navega hasta **Factory Reset** y presiona NEXT para restaurar todos los valores por defecto.
